@@ -1,16 +1,14 @@
 #lang racket
-( define miau 'Plueschi )
-( define katze miau )
-( define tiger 'miau )
-( define ( welcherNameGiltWo PersonA PersonB )
-( let ( ( PersonA 'Sam)
-( PersonC PersonA ) )
-PersonC ) )
-( define xs1 '( 0 2 3 miau katze ) )
-( define xs2 ( list miau katze  ) )
-( define xs3 ( cons katze miau ) )
-(define hello 'hullo)
-
+(define miau 'Plueschi)
+(define katze miau)
+(define tiger 'miau)
+(define (welcherNameGiltWo PersonA PersonB)
+   (let ((PersonA 'Sam)
+         (PersonC PersonA))
+     PersonC))
+(define xs1 '( 0 2 3 miau katze))
+(define xs2 (list miau katze))
+(define xs3 (cons katze miau))
 
 #| 
   1. miau > 'Plueschi, da in der Variable miau der char 'Plueschi gespeichert ist.
@@ -48,17 +46,17 @@ ausgegeben.
 (define (power r n)
   (if (= n 0)
       1
-      (if 
-           (odd? n)
-           (* r (power r (- n 1))) 
-           (sqr (power r (/ n 2))))))
+      (if
+       (odd? n)
+       (* r (power r (- n 1))) 
+       (sqr (power r (/ n 2))))))
       
 #| Aufg. 2.3 Hilfseuler wird mit n=1 berechnet. Das Ergebnis davon ist 2e, also wird in 
   euler noch durch 2 geteilt. Um 1000 Stellen von e sehen zu können, multipliziert die  
 Funktion see1000digits e mit 10^1001. |#
 
 (define (hilfsEuler n)
-     (if (< (/ n (fac(- n 1))) (/ 1 (power 10 1000)))
+  (if (< (/ n (fac(- n 1))) (/ 1 (power 10 1000)))
       (+ (/ n (fac(- n 1))))
       (+ (/ n (fac(- n 1))) (hilfsEuler (+ n 1)))))
          
@@ -68,9 +66,7 @@ Funktion see1000digits e mit 10^1001. |#
 (define (see1000digits)
   (* (power 10 1001) (euler)))
 
-#| Aufgabe 2.4: pi für (pi 0 2000) erhält man den Wert #e3.1410926536210432286970258...
- |#
-
+#| Aufgabe 2.4: pi für (pi 0 2000) erhält man den Wert #e3.1410926536210432286970258... |#
 
 (define (pi n x)
   (if (< n x) 
@@ -81,7 +77,7 @@ Funktion see1000digits e mit 10^1001. |#
        (pi (+ n 1) x))
       0))
          
-#| Aufgabe 3: Bestimmt den Typ eine eingegebenen Elements|#
+#| Aufgabe 3: Bestimmt den Typ eines eingegebenen Elements |#
 
 (define (type-of x)
   (cond ([boolean? x] 'boolean)

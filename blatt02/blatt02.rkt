@@ -37,12 +37,13 @@ ausgegeben.
 (welcherNameGiltWo 'tiger 'katze) wertet aus zu 'tiger (mit der gleichen Begründung wie bei Nr. 8.)
  14. (eval (welcherNameGiltWo 'katze 'tiger)) -> 'tiger wird evaluiert zu 'miau, was zu 'Plueschi ausgewertet wird.
  |#
-#|Aufg. 2.1|#
+#|Aufg. 2.1 Berechnet die Fakultät einer Zahl n rekursiv.|#
 
 (define (fac n)
   (if (= n 0) 1 (* n (fac (- n 1)))))
 
-#| Aufg. 2.2 |#
+#| Aufg. 2.2: Berechnet das Ergebnis einer to-the-power-of-Funktion: r^n, mit r Element der 
+ reellen Zahlen und n Element der natürlichen Zahlen|#
 
 (define (power r n)
   (if (= n 0)
@@ -67,15 +68,46 @@ Funktion see1000digits e mit 10^1001. |#
 (define (see1000digits)
   (* (power 10 1001) (euler)))
 
-#| Aufgabe 2.4: pi |#
+#| Aufgabe 2.4: pi für (pi 0 2000) erhält man den Wert #e3.1410926536210432286970258...
+ |#
 
-(define (my-pi)
-  (* 4 (hilfsPi 1)))
 
-(define (hilfsPi n)
-  (if (< n 1000) (+ (- (/ 1 n ) (/ 1 (+ n 2))) (hilfsPi(+ n 4))) 1))
-pi
+(define (pi n x)
+  (if (< n x) 
+      (+ 
+       (* (expt (- 1) n) 
+          (/ 4  ;; statt am Ende mal 4 zu rechnen ändern wir den Zähler schon hier. 
+             (+ (* 2 n) 1)))
+       (pi (+ n 1) x))
+      0))
+         
+#| Aufgabe 3: Bestimmt den Typ eine eingegebenen Elements|#
 
-#| Aufgabe 3|#
+(define (type-of x)
+  (cond ([boolean? x] 'boolean)
+        ([list? x] 'list) 
+        ([pair? x] 'pair)
+        ([symbol? x] 'symbol)
+        ([number? x] 'number)
+        ([char? x] 'char)
+        ([string? x] 'string)
+        ([vector? x] 'vector)
+        ([procedure? x] 'procedure)
+        ))
 
-(vector typvektor (boolean? pair? list? symbol? number? char? string? vector? procedure?))
+(type-of (* 2 3 4)) ; -> 'number: Der Ausdruck wird ausgewertet, das Ergebnis ist eine Zahl.
+(type-of (not 42)) ; -> 'boolean: jede Zahl hat per Definition den Wahrheitswert true.
+                   ;(not #t) -> #f, und das ist ein boolean.
+(type-of '(eins zwei drei)) ; -> 'list, gefüllt mit beliebigen Elementen
+(type-of '()) ; -> 'list, da auch die leere Liste eine Liste ist
+(define (id z) z) 
+(type-of (id sin)) ; -> 'procedure. id ist in der Funktion vorher definiert worden und beschreibt eine 
+              ;Procedure. id sin ist also auch eine Procedure.
+(type-of (string-ref "Harry_Potter_und_der_Stein_der_Weisen" 3)); -> 'char; string-ref gibt den char aus
+              ; der an n-ter Stelle ist, in diesem Fall ist das Ergebnis #\r, da r das 4. Zeichen von harRy
+              ; ist
+(type-of (lambda (x) x)) ;->  'procedure, lambda (x) x ist eine anonyme Funktion.
+(type-of type-of) ; ->'procedure die Funktion die wir geschrieben haben ist eine Funktion.
+(type-of (type-of type-of)) ; -> 'symbol, da " 'procedure " ein Symbol ist.
+
+

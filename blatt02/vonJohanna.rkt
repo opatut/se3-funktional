@@ -1,0 +1,118 @@
+#lang racket
+( define miau 'Plueschi )
+( define katze miau )
+( define tiger 'miau )
+( define ( welcherNameGiltWo PersonA PersonB )
+( let ( ( PersonA 'Sam)
+( PersonC PersonA ) )
+PersonC ) )
+( define xs1 '( 0 2 3 miau katze ) )
+( define xs2 ( list miau katze  ) )
+( define xs3 ( cons katze miau ) )
+(define hello 'hullo)
+
+
+#| 
+  1. miau > 'Plueschi, da in der Variable miau der char 'Plueschi gespeichert ist.
+  2. katze -> 'Plueschi, da mit miau der Ausdruck miau aufgerufen wird. Dieser wertet aus zu 'Plueschi.
+  3. tiger -> 'miau, da in dem Ausdruck tiger der Wert 'miau gespeichert ist.
+  4. (quote katze) -> 'katze mit quote wird der Ausdruck in einen char umgewandelt und ausgegeben. 
+  5. (eval tiger) -> 'Plueschi Der Wert von Tiger wird ausgewertet. 
+  6. (eval katze) -> Fehler, da Plueschi nicht ausgewertet werden kann.
+  7. (eval 'tiger) -> 'miau, da der Ausdruck Tiger ausgewertet wird, dieser hat den Wert 'miau.
+  8. (welcherNameGiltWo 'harry 'potter) -> 'harry, da der vorgegebene Wert durch das Eingegebene bestimmt ist.
+Wenn PersonA einen neuen Wert zugeschrieben bekommt, so ist dieser noch nicht überschrieben. Wenn statt let let* 
+steht, so wertet der Ausdruck zu 'Sam aus, da Veränderungen innerhalb der Definition nun innerhalb des let-Funk-
+ tionsaufrufes übernommen werden.
+  9. (cdddr xs1) -> '(miau katze). cdr gibt die Liste ohne das erste Element aus. je mehr d's in cdr vorhanden sind, 
+desto mehr Elemente werden abgeschnitten. Bei 3 d's werden also die ersten 3 Elemente abgeschnitten.
+ 10. (cdr xs2) -> '(Plueschi) (list miau katze) wird zu einer Liste mit den Elementen miau und katze, die jeweils zu
+'Plueschi ausgewertet werden. Aus dieser Liste wird das erste Plueschi entfernt, weshalb sie nur noch aus einem
+Plueschi besteht.
+ 11. (cdr xs3) -> 'Plueschi (cons katze miau) wird zu (katze . miau), was zu '(Plueschi Plueschi) ausgewertet wird. 
+Wenn das erste Element dieser Liste entfernt wird bleibt nur noch 'Plueschi.
+ 12. (eval (sqrt 3)) -> 1.7320508075688772 Der Ausdruck (sqrt 3) wird ausgerechnet und das Ergebnis von Wurzel 3 
+ausgegeben.
+ 13. (eval '(welcherNameGiltWo 'tiger 'katze)) -> 'tiger, der Ausdruck nach dem '( wird ausgewertet und 
+(welcherNameGiltWo 'tiger 'katze) wertet aus zu 'tiger (mit der gleichen Begründung wie bei Nr. 8.)
+ 14. (eval (welcherNameGiltWo 'katze 'tiger)) -> 'tiger wird evaluiert zu 'miau, was zu 'Plueschi ausgewertet wird.
+ |#
+#|Aufg. 2.1 Berechnet die Fakultät einer Zahl n rekursiv.|#
+
+(define (fac n)
+  (if (= n 0) 1 (* n (fac (- n 1)))))
+
+#| Aufg. 2.2: Berechnet das Ergebnis einer to-the-power-of-Funktion: r^n, mit r Element der 
+ reellen Zahlen und n Element der natürlichen Zahlen|#
+
+(define (power r n)
+  (if (= n 0)
+      1
+      (if 
+           (odd? n)
+           (* r (power r (- n 1))) 
+           (sqr (power r (/ n 2))))))
+      
+#| Aufg. 2.3 Hilfseuler wird mit n=1 berechnet. Das Ergebnis davon ist 2e, also wird in 
+  euler noch durch 2 geteilt. Um 1000 Stellen von e sehen zu können, multipliziert die  
+Funktion see1000digits e mit 10^1001. |#
+
+(define (hilfsEuler n)
+     (if (< (/ n (fac(- n 1))) (/ 1 (power 10 1000)))
+      (+ (/ n (fac(- n 1))))
+      (+ (/ n (fac(- n 1))) (hilfsEuler (+ n 1)))))
+         
+(define (euler)
+  (/ (hilfsEuler 1) 2))
+
+(define (see1000digits)
+  (* (power 10 1001) (euler)))
+
+#| Aufgabe 2.4: pi |#
+
+(define (my-pi)
+  (* 4 (hilfsPi2 0 1000000)))
+
+(define (hilfsPi n x)
+  (if (< n x) (+ (- (/ 1 n ) (/ 1 (+ n 2))) (hilfsPi(+ n 4) x)) 1))
+pi
+
+(define (hilfsPi2 n x)
+  (if (< n x) 
+      (+ 
+       (* (power (- 1) n) 
+          (/ 1 
+             (+ (* 2 n) 1)))
+       (hilfsPi2 (+ n 1) x))
+      (+ 0)))
+         
+      #| Aufgabe 3: Bestimmt den Typ eine eingegebenen Elements|#
+
+(define (type-of x)
+  (cond ([boolean? x] 'boolean)
+        ([list? x] 'list) 
+        ([pair? x] 'pair)
+        ([symbol? x] 'symbol)
+        ([number? x] 'number)
+        ([char? x] 'char)
+        ([string? x] 'string)
+        ([vector? x] 'vector)
+        ([procedure? x] 'procedure)
+        ))
+
+(type-of (* 2 3 4)) ; -> 'number: Der Ausdruck wird ausgewertet, das Ergebnis ist eine Zahl.
+(type-of (not 42)) ; -> 'boolean: jede Zahl hat per Definition den Wahrheitswert true.
+                   ;(not #t) -> #f, und das ist ein boolean.
+(type-of '(eins zwei drei)) ; -> 'list, gefüllt mit beliebigen Elementen
+(type-of '()) ; -> 'list, da auch die leere Liste eine Liste ist
+(define (id z) z) 
+(type-of (id sin)) ; -> 'procedure. id ist in der Funktion vorher definiert worden und beschreibt eine 
+              ;Procedure. id sin ist also auch eine Procedure.
+(type-of (string-ref "Harry_Potter_und_der_Stein_der_Weisen" 3)); -> 'char; string-ref gibt den char aus
+              ; der an n-ter Stelle ist, in diesem Fall ist das Ergebnis #\r, da r das 4. Zeichen von harRy
+              ; ist
+(type-of (lambda (x) x)) ;->  'procedure, lambda (x) x ist eine anonyme Funktion.
+(type-of type-of) ; ->'procedure die Funktion die wir geschrieben haben ist eine Funktion.
+(type-of (type-of type-of)) ; -> 'symbol, da " 'procedure " ein Symbol ist.
+
+

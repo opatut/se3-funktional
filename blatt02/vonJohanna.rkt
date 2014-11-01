@@ -1,118 +1,1042 @@
-#lang racket
-( define miau 'Plueschi )
-( define katze miau )
-( define tiger 'miau )
-( define ( welcherNameGiltWo PersonA PersonB )
-( let ( ( PersonA 'Sam)
-( PersonC PersonA ) )
-PersonC ) )
-( define xs1 '( 0 2 3 miau katze ) )
-( define xs2 ( list miau katze  ) )
-( define xs3 ( cons katze miau ) )
-(define hello 'hullo)
+#reader(lib"read.ss""wxme")WXME0108 ## 
+#|
+   This file uses the GRacket editor format.
+   Open this file in DrRacket version 6.1 or later to read it.
 
+   Most likely, it was created by saving a program in DrRacket,
+   and it probably contains a program with non-text elements
+   (such as images or comment boxes).
 
-#| 
-  1. miau > 'Plueschi, da in der Variable miau der char 'Plueschi gespeichert ist.
-  2. katze -> 'Plueschi, da mit miau der Ausdruck miau aufgerufen wird. Dieser wertet aus zu 'Plueschi.
-  3. tiger -> 'miau, da in dem Ausdruck tiger der Wert 'miau gespeichert ist.
-  4. (quote katze) -> 'katze mit quote wird der Ausdruck in einen char umgewandelt und ausgegeben. 
-  5. (eval tiger) -> 'Plueschi Der Wert von Tiger wird ausgewertet. 
-  6. (eval katze) -> Fehler, da Plueschi nicht ausgewertet werden kann.
-  7. (eval 'tiger) -> 'miau, da der Ausdruck Tiger ausgewertet wird, dieser hat den Wert 'miau.
-  8. (welcherNameGiltWo 'harry 'potter) -> 'harry, da der vorgegebene Wert durch das Eingegebene bestimmt ist.
-Wenn PersonA einen neuen Wert zugeschrieben bekommt, so ist dieser noch nicht überschrieben. Wenn statt let let* 
-steht, so wertet der Ausdruck zu 'Sam aus, da Veränderungen innerhalb der Definition nun innerhalb des let-Funk-
- tionsaufrufes übernommen werden.
-  9. (cdddr xs1) -> '(miau katze). cdr gibt die Liste ohne das erste Element aus. je mehr d's in cdr vorhanden sind, 
-desto mehr Elemente werden abgeschnitten. Bei 3 d's werden also die ersten 3 Elemente abgeschnitten.
- 10. (cdr xs2) -> '(Plueschi) (list miau katze) wird zu einer Liste mit den Elementen miau und katze, die jeweils zu
-'Plueschi ausgewertet werden. Aus dieser Liste wird das erste Plueschi entfernt, weshalb sie nur noch aus einem
-Plueschi besteht.
- 11. (cdr xs3) -> 'Plueschi (cons katze miau) wird zu (katze . miau), was zu '(Plueschi Plueschi) ausgewertet wird. 
-Wenn das erste Element dieser Liste entfernt wird bleibt nur noch 'Plueschi.
- 12. (eval (sqrt 3)) -> 1.7320508075688772 Der Ausdruck (sqrt 3) wird ausgerechnet und das Ergebnis von Wurzel 3 
-ausgegeben.
- 13. (eval '(welcherNameGiltWo 'tiger 'katze)) -> 'tiger, der Ausdruck nach dem '( wird ausgewertet und 
-(welcherNameGiltWo 'tiger 'katze) wertet aus zu 'tiger (mit der gleichen Begründung wie bei Nr. 8.)
- 14. (eval (welcherNameGiltWo 'katze 'tiger)) -> 'tiger wird evaluiert zu 'miau, was zu 'Plueschi ausgewertet wird.
- |#
-#|Aufg. 2.1 Berechnet die Fakultät einer Zahl n rekursiv.|#
-
-(define (fac n)
-  (if (= n 0) 1 (* n (fac (- n 1)))))
-
-#| Aufg. 2.2: Berechnet das Ergebnis einer to-the-power-of-Funktion: r^n, mit r Element der 
- reellen Zahlen und n Element der natürlichen Zahlen|#
-
-(define (power r n)
-  (if (= n 0)
-      1
-      (if 
-           (odd? n)
-           (* r (power r (- n 1))) 
-           (sqr (power r (/ n 2))))))
-      
-#| Aufg. 2.3 Hilfseuler wird mit n=1 berechnet. Das Ergebnis davon ist 2e, also wird in 
-  euler noch durch 2 geteilt. Um 1000 Stellen von e sehen zu können, multipliziert die  
-Funktion see1000digits e mit 10^1001. |#
-
-(define (hilfsEuler n)
-     (if (< (/ n (fac(- n 1))) (/ 1 (power 10 1000)))
-      (+ (/ n (fac(- n 1))))
-      (+ (/ n (fac(- n 1))) (hilfsEuler (+ n 1)))))
-         
-(define (euler)
-  (/ (hilfsEuler 1) 2))
-
-(define (see1000digits)
-  (* (power 10 1001) (euler)))
-
-#| Aufgabe 2.4: pi |#
-
-(define (my-pi)
-  (* 4 (hilfsPi2 0 1000000)))
-
-(define (hilfsPi n x)
-  (if (< n x) (+ (- (/ 1 n ) (/ 1 (+ n 2))) (hilfsPi(+ n 4) x)) 1))
-pi
-
-(define (hilfsPi2 n x)
-  (if (< n x) 
-      (+ 
-       (* (power (- 1) n) 
-          (/ 1 
-             (+ (* 2 n) 1)))
-       (hilfsPi2 (+ n 1) x))
-      (+ 0)))
-         
-      #| Aufgabe 3: Bestimmt den Typ eine eingegebenen Elements|#
-
-(define (type-of x)
-  (cond ([boolean? x] 'boolean)
-        ([list? x] 'list) 
-        ([pair? x] 'pair)
-        ([symbol? x] 'symbol)
-        ([number? x] 'number)
-        ([char? x] 'char)
-        ([string? x] 'string)
-        ([vector? x] 'vector)
-        ([procedure? x] 'procedure)
-        ))
-
-(type-of (* 2 3 4)) ; -> 'number: Der Ausdruck wird ausgewertet, das Ergebnis ist eine Zahl.
-(type-of (not 42)) ; -> 'boolean: jede Zahl hat per Definition den Wahrheitswert true.
-                   ;(not #t) -> #f, und das ist ein boolean.
-(type-of '(eins zwei drei)) ; -> 'list, gefüllt mit beliebigen Elementen
-(type-of '()) ; -> 'list, da auch die leere Liste eine Liste ist
-(define (id z) z) 
-(type-of (id sin)) ; -> 'procedure. id ist in der Funktion vorher definiert worden und beschreibt eine 
-              ;Procedure. id sin ist also auch eine Procedure.
-(type-of (string-ref "Harry_Potter_und_der_Stein_der_Weisen" 3)); -> 'char; string-ref gibt den char aus
-              ; der an n-ter Stelle ist, in diesem Fall ist das Ergebnis #\r, da r das 4. Zeichen von harRy
-              ; ist
-(type-of (lambda (x) x)) ;->  'procedure, lambda (x) x ist eine anonyme Funktion.
-(type-of type-of) ; ->'procedure die Funktion die wir geschrieben haben ist eine Funktion.
-(type-of (type-of type-of)) ; -> 'symbol, da " 'procedure " ein Symbol ist.
-
-
+            http://racket-lang.org/
+|#
+ 31 7 #"wxtext\0"
+3 1 6 #"wxtab\0"
+1 1 8 #"wximage\0"
+2 0 8 #"wxmedia\0"
+4 1 34 #"(lib \"syntax-browser.ss\" \"mrlib\")\0"
+1 0 16 #"drscheme:number\0"
+3 0 44 #"(lib \"number-snip.ss\" \"drscheme\" \"private\")\0"
+1 0 36 #"(lib \"comment-snip.ss\" \"framework\")\0"
+1 0 93
+(
+ #"((lib \"collapsed-snipclass.ss\" \"framework\") (lib \"collapsed-sni"
+ #"pclass-wxme.ss\" \"framework\"))\0"
+) 0 0 43 #"(lib \"collapsed-snipclass.ss\" \"framework\")\0"
+0 0 19 #"drscheme:sexp-snip\0"
+0 0 36 #"(lib \"cache-image-snip.ss\" \"mrlib\")\0"
+1 0 68
+(
+ #"((lib \"image-core.ss\" \"mrlib\") (lib \"image-core-wxme.rkt\" \"mr"
+ #"lib\"))\0"
+) 1 0 29 #"drscheme:bindings-snipclass%\0"
+1 0 88
+(
+ #"((lib \"pict-snip.rkt\" \"drracket\" \"private\") (lib \"pict-snip.r"
+ #"kt\" \"drracket\" \"private\"))\0"
+) 0 0 34 #"(lib \"bullet-snip.rkt\" \"browser\")\0"
+0 0 25 #"(lib \"matrix.ss\" \"htdp\")\0"
+1 0 22 #"drscheme:lambda-snip%\0"
+1 0 29 #"drclickable-string-snipclass\0"
+0 0 26 #"drracket:spacer-snipclass\0"
+0 0 57
+#"(lib \"hrule-snip.rkt\" \"macro-debugger\" \"syntax-browser\")\0"
+1 0 26 #"drscheme:pict-value-snip%\0"
+0 0 45 #"(lib \"image-snipr.ss\" \"slideshow\" \"private\")\0"
+1 0 38 #"(lib \"pict-snipclass.ss\" \"slideshow\")\0"
+2 0 55 #"(lib \"vertical-separator-snip.ss\" \"stepper\" \"private\")\0"
+1 0 18 #"drscheme:xml-snip\0"
+1 0 31 #"(lib \"xml-snipclass.ss\" \"xml\")\0"
+1 0 21 #"drscheme:scheme-snip\0"
+2 0 34 #"(lib \"scheme-snipclass.ss\" \"xml\")\0"
+1 0 10 #"text-box%\0"
+1 0 32 #"(lib \"text-snipclass.ss\" \"xml\")\0"
+1 0 1 6 #"wxloc\0"
+          0 0 57 0 1 #"\0"
+0 75 1 #"\0"
+0 10 90 -1 90 -1 3 -1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 255 255 255 1 -1 0 9
+#"Standard\0"
+0 75 12 #"Courier New\0"
+0 10 90 -1 90 -1 3 -1 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 255 255 255 1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 1 1 1 1 1 1 0 0 0 0 0 0 -1 -1 2 24
+#"framework:default-color\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 255 255 255 -1 -1 2
+1 #"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1 1 1 150 0 150 0 0 0 -1 -1 2 15
+#"text:ports out\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 150 0 150 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 93 -1 -1 -1 0 0 0 0 0 0 0 0 0 1.0 1.0 1.0 255 0 0 0 0 0 -1
+-1 2 15 #"text:ports err\0"
+0 -1 1 #"\0"
+1 0 -1 92 93 -1 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 255 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1 1 1 0 0 175 0 0 0 -1 -1 2 17
+#"text:ports value\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 175 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1.0 0 92 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1.0 1.0 1.0 34 139 34 0 0 0 -1
+-1 2 27 #"Matching Parenthesis Style\0"
+0 -1 1 #"\0"
+1.0 0 92 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1.0 1.0 1.0 34 139 34 0 0 0 -1
+-1 2 1 #"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 38 38 128 0 0 0 -1 -1 2 37
+#"framework:syntax-color:scheme:symbol\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 38 38 128 0 0 0 -1 -1 2 38
+#"framework:syntax-color:scheme:keyword\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 38 38 128 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 194 116 31 0 0 0 -1 -1 2
+38 #"framework:syntax-color:scheme:comment\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 194 116 31 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 41 128 38 0 0 0 -1 -1 2 37
+#"framework:syntax-color:scheme:string\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 41 128 38 0 0 0 -1 -1 2 35
+#"framework:syntax-color:scheme:text\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 41 128 38 0 0 0 -1 -1 2 39
+#"framework:syntax-color:scheme:constant\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 41 128 38 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 132 60 36 0 0 0 -1 -1 2 49
+#"framework:syntax-color:scheme:hash-colon-keyword\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 132 60 36 0 0 0 -1 -1 2 42
+#"framework:syntax-color:scheme:parenthesis\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 132 60 36 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 255 0 0 0 0 0 -1 -1 2 36
+#"framework:syntax-color:scheme:error\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 255 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 36
+#"framework:syntax-color:scheme:other\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 16
+#"Misspelled Text\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 81 112 203 0 0 0 -1 -1 2
+38 #"drracket:check-syntax:lexically-bound\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 81 112 203 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 178 34 34 0 0 0 -1 -1 2 28
+#"drracket:check-syntax:set!d\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 178 34 34 0 0 0 -1 -1 2 37
+#"drracket:check-syntax:unused-require\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 255 0 0 0 0 0 -1 -1 2 36
+#"drracket:check-syntax:free-variable\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 255 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 68 0 203 0 0 0 -1 -1 2 31
+#"drracket:check-syntax:imported\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 68 0 203 0 0 0 -1 -1 2 47
+#"drracket:check-syntax:my-obligation-style-pref\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 178 34 34 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 116 0 0 0 0 -1 -1 2 50
+#"drracket:check-syntax:their-obligation-style-pref\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 116 0 0 0 0 -1 -1 2 48
+#"drracket:check-syntax:unk-obligation-style-pref\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 139 142 28 0 0 0 -1 -1 2
+49 #"drracket:check-syntax:both-obligation-style-pref\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 139 142 28 0 0 0 -1 -1 2
+26 #"plt:htdp:test-coverage-on\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 1
+#"\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 1 0 0 0 0 0 0 255 165 0 0 0 0 -1 -1 2 27
+#"plt:htdp:test-coverage-off\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 1 0 0 0 0 0 0 255 165 0 0 0 0 -1 -1 4 1
+#"\0"
+0 70 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 1.0 1.0 1.0 1.0 1.0 1.0 0 0 0 0 0 0
+-1 -1 4 4 #"XML\0"
+0 70 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 1.0 1.0 1.0 1.0 1.0 1.0 0 0 0 0 0 0
+-1 -1 2 37 #"plt:module-language:test-coverage-on\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 0 0 0 0 1 1 1 0 0 0 0 0 0 -1 -1 2 38
+#"plt:module-language:test-coverage-off\0"
+0 -1 1 #"\0"
+1 0 -1 92 -1 93 -1 -1 0 1 0 0 0 1 0 0 0 0 0 0 255 165 0 0 0 0 -1 -1 4 1
+#"\0"
+0 71 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 1.0 1.0 1.0 1.0 1.0 1.0 0 0 0 0 0 0
+-1 -1 4 1 #"\0"
+0 -1 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 1 0 0 0 0 0 0 0 0 1.0 1.0 1.0 0 0 255 0 0 0 -1
+-1 4 1 #"\0"
+0 71 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 1 0 0 0 0 0 0 0 0 1.0 1.0 1.0 0 0 255 0 0 0 -1
+-1 4 1 #"\0"
+0 71 1 #"\0"
+1.0 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1.0 1.0 1.0 0 100 0 0 0 0 -1
+-1 2 1 #"\0"
+0 -1 1 #"\0"
+1 0 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0 0 0 1 1 1 200 0 0 0 0 0 -1 -1 4 1
+#"\0"
+0 -1 1 #"\0"
+1.0 0 92 -1 -1 -1 -1 -1 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 255 255 0 -1 -1
+          0 676 0 28 3 12 #"#lang racket"
+0 0 24 29 1 #"\n"
+0 0 24 3 2 #"( "
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"miau"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"'"
+0 0 14 3 8 #"Plueschi"
+0 0 24 3 2 #" )"
+0 0 24 29 1 #"\n"
+0 0 24 3 2 #"( "
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"katze"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"miau"
+0 0 24 3 2 #" )"
+0 0 24 29 1 #"\n"
+0 0 24 3 2 #"( "
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"tiger"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"'"
+0 0 14 3 4 #"miau"
+0 0 24 3 2 #" )"
+0 0 24 29 1 #"\n"
+0 0 24 3 2 #"( "
+0 0 15 3 6 #"define"
+0 0 24 3 3 #" ( "
+0 0 14 3 17 #"welcherNameGiltWo"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"PersonA"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"PersonB"
+0 0 24 3 2 #" )"
+0 0 24 29 1 #"\n"
+0 0 24 3 2 #"( "
+0 0 15 3 3 #"let"
+0 0 24 3 5 #" ( ( "
+0 0 14 3 7 #"PersonA"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"'"
+0 0 14 3 3 #"Sam"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 2 #"( "
+0 0 14 3 7 #"PersonC"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"PersonA"
+0 0 24 3 4 #" ) )"
+0 0 24 29 1 #"\n"
+0 0 14 3 7 #"PersonC"
+0 0 24 3 4 #" ) )"
+0 0 24 29 1 #"\n"
+0 0 24 3 2 #"( "
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 3 #"xs1"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"'"
+0 0 24 3 2 #"( "
+0 0 21 3 1 #"0"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"2"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"3"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"miau"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"katze"
+0 0 24 3 4 #" ) )"
+0 0 24 29 1 #"\n"
+0 0 24 3 2 #"( "
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 3 #"xs2"
+0 0 24 3 3 #" ( "
+0 0 14 3 4 #"list"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"miau"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"katze"
+0 0 24 3 5 #"  ) )"
+0 0 24 29 1 #"\n"
+0 0 24 3 2 #"( "
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 3 #"xs3"
+0 0 24 3 3 #" ( "
+0 0 14 3 4 #"cons"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"katze"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"miau"
+0 0 24 3 4 #" ) )"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 1 #" "
+0 0 14 3 5 #"hello"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"'"
+0 0 14 3 5 #"hullo"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 3 #"#| "
+0 0 17 29 1 #"\n"
+0 0 17 3 82
+(
+ #"  1. miau > 'Plueschi, da in der Variable miau der char 'Plueschi ge"
+ #"speichert ist."
+) 0 0 17 29 1 #"\n"
+0 0 17 3 103
+(
+ #"  2. katze -> 'Plueschi, da mit miau der Ausdruck miau aufgerufen wi"
+ #"rd. Dieser wertet aus zu 'Plueschi."
+) 0 0 17 29 1 #"\n"
+0 0 17 3 77
+(
+ #"  3. tiger -> 'miau, da in dem Ausdruck tiger der Wert 'miau gespeic"
+ #"hert ist."
+) 0 0 17 29 1 #"\n"
+0 0 17 3 99
+(
+ #"  4. (quote katze) -> 'katze mit quote wird der Ausdruck in einen ch"
+ #"ar umgewandelt und ausgegeben. "
+) 0 0 17 29 1 #"\n"
+0 0 17 3 68
+#"  5. (eval tiger) -> 'Plueschi Der Wert von Tiger wird ausgewertet. "
+0 0 17 29 1 #"\n"
+0 0 17 3 71
+(
+ #"  6. (eval katze) -> Fehler, da Plueschi nicht ausgewertet werden ka"
+ #"nn."
+) 0 0 17 29 1 #"\n"
+0 0 17 3 95
+(
+ #"  7. (eval 'tiger) -> 'miau, da der Ausdruck Tiger ausgewertet wird,"
+ #" dieser hat den Wert 'miau."
+) 0 0 17 29 1 #"\n"
+0 0 17 3 110
+(
+ #"  8. (welcherNameGiltWo 'harry 'potter) -> 'harry, da der vorgegeben"
+ #"e Wert durch das Eingegebene bestimmt ist."
+) 0 0 17 29 1 #"\n"
+0 0 17 3 114
+(
+ #"Wenn PersonA einen neuen Wert zugeschrieben bekommt, so ist dieser n"
+ #"och nicht \303\274berschrieben. Wenn statt let let* "
+) 0 0 17 29 1 #"\n"
+0 0 17 3 113
+(
+ #"steht, so wertet der Ausdruck zu 'Sam aus, da Ver\303\244nderungen i"
+ #"nnerhalb der Definition nun innerhalb des let-Funk-"
+) 0 0 17 29 1 #"\n"
+0 0 17 3 34 #" tionsaufrufes \303\274bernommen werden."
+0 0 17 29 1 #"\n"
+0 0 17 3 117
+(
+ #"  9. (cdddr xs1) -> '(miau katze). cdr gibt die Liste ohne das erste"
+ #" Element aus. je mehr d's in cdr vorhanden sind, "
+) 0 0 17 29 1 #"\n"
+0 0 17 3 100
+(
+ #"desto mehr Elemente werden abgeschnitten. Bei 3 d's werden also die "
+ #"ersten 3 Elemente abgeschnitten."
+) 0 0 17 29 1 #"\n"
+0 0 17 3 116
+(
+ #" 10. (cdr xs2) -> '(Plueschi) (list miau katze) wird zu einer Liste "
+ #"mit den Elementen miau und katze, die jeweils zu"
+) 0 0 17 29 1 #"\n"
+0 0 17 3 111
+(
+ #"'Plueschi ausgewertet werden. Aus dieser Liste wird das erste Pluesc"
+ #"hi entfernt, weshalb sie nur noch aus einem"
+) 0 0 17 29 1 #"\n"
+0 0 17 3 17 #"Plueschi besteht."
+0 0 17 29 1 #"\n"
+0 0 17 3 116
+(
+ #" 11. (cdr xs3) -> 'Plueschi (cons katze miau) wird zu (katze . miau)"
+ #", was zu '(Plueschi Plueschi) ausgewertet wird. "
+) 0 0 17 29 1 #"\n"
+0 0 17 3 76
+(
+ #"Wenn das erste Element dieser Liste entfernt wird bleibt nur noch 'P"
+ #"lueschi."
+) 0 0 17 29 1 #"\n"
+0 0 17 3 113
+(
+ #" 12. (eval (sqrt 3)) -> 1.7320508075688772 Der Ausdruck (sqrt 3) wir"
+ #"d ausgerechnet und das Ergebnis von Wurzel 3 "
+) 0 0 17 29 1 #"\n"
+0 0 17 3 11 #"ausgegeben."
+0 0 17 29 1 #"\n"
+0 0 17 3 104
+(
+ #" 13. (eval '(welcherNameGiltWo 'tiger 'katze)) -> 'tiger, der Ausdru"
+ #"ck nach dem '( wird ausgewertet und "
+) 0 0 17 29 1 #"\n"
+0 0 17 3 100
+(
+ #"(welcherNameGiltWo 'tiger 'katze) wertet aus zu 'tiger (mit der glei"
+ #"chen Begr\303\274ndung wie bei Nr. 8.)"
+) 0 0 17 29 1 #"\n"
+0 0 17 3 115
+(
+ #" 14. (eval (welcherNameGiltWo 'katze 'tiger)) -> 'tiger wird evaluie"
+ #"rt zu 'miau, was zu 'Plueschi ausgewertet wird."
+) 0 0 17 29 1 #"\n"
+0 0 17 3 3 #" |#"
+0 0 24 29 1 #"\n"
+0 0 17 3 60
+#"#|Aufg. 2.1 Berechnet die Fakult\303\244t einer Zahl n rekursiv.|#"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 3 #"fac"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 2 #"if"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"="
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"0"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"1"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"*"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 2 #" ("
+0 0 14 3 3 #"fac"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"-"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 5 #")))))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 92
+(
+ #"#| Aufg. 2.2: Berechnet das Ergebnis einer to-the-power-of-Funktion:"
+ #" r^n, mit r Element der "
+) 0 0 17 29 1 #"\n"
+0 0 17 3 55
+#" reellen Zahlen und n Element der nat\303\274rlichen Zahlen|#"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"power"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"r"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 2 #"if"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"="
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"0"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"      "
+0 0 21 3 1 #"1"
+0 0 24 29 1 #"\n"
+0 0 24 3 7 #"      ("
+0 0 14 3 2 #"if"
+0 0 24 3 1 #" "
+0 0 24 29 1 #"\n"
+0 0 24 3 12 #"           ("
+0 0 14 3 4 #"odd?"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 12 #"           ("
+0 0 14 3 1 #"*"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"r"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"power"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"r"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"-"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 4 #"))) "
+0 0 24 29 1 #"\n"
+0 0 24 3 12 #"           ("
+0 0 14 3 3 #"sqr"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"power"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"r"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"/"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"2"
+0 0 24 3 6 #"))))))"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"      "
+0 0 24 29 1 #"\n"
+0 0 17 3 88
+(
+ #"#| Aufg. 2.3 Hilfseuler wird mit n=1 berechnet. Das Ergebnis davon i"
+ #"st 2e, also wird in "
+) 0 0 17 29 1 #"\n"
+0 0 17 3 89
+(
+ #"  euler noch durch 2 geteilt. Um"
+ #" 1000 Stellen von e sehen zu k\303\266nnen, multipliziert die  "
+) 0 0 17 29 1 #"\n"
+0 0 17 3 40 #"Funktion see1000digits e mit 10^1001. |#"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"hilfsEuler"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"     ("
+0 0 14 3 2 #"if"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"<"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"/"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 2 #" ("
+0 0 14 3 3 #"fac"
+0 0 24 3 1 #"("
+0 0 14 3 1 #"-"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 5 #"))) ("
+0 0 14 3 1 #"/"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"power"
+0 0 24 3 1 #" "
+0 0 21 3 2 #"10"
+0 0 24 3 1 #" "
+0 0 21 3 4 #"1000"
+0 0 24 3 3 #")))"
+0 0 24 29 1 #"\n"
+0 0 24 3 7 #"      ("
+0 0 14 3 1 #"+"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"/"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 2 #" ("
+0 0 14 3 3 #"fac"
+0 0 24 3 1 #"("
+0 0 14 3 1 #"-"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 4 #"))))"
+0 0 24 29 1 #"\n"
+0 0 24 3 7 #"      ("
+0 0 14 3 1 #"+"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"/"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 2 #" ("
+0 0 14 3 3 #"fac"
+0 0 24 3 1 #"("
+0 0 14 3 1 #"-"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 5 #"))) ("
+0 0 14 3 10 #"hilfsEuler"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"+"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 5 #")))))"
+0 0 24 29 1 #"\n"
+0 0 24 3 9 #"         "
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"euler"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 1 #"/"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"hilfsEuler"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"2"
+0 0 24 3 2 #"))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 13 #"see1000digits"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 1 #"*"
+0 0 24 3 2 #" ("
+0 0 14 3 5 #"power"
+0 0 24 3 1 #" "
+0 0 21 3 2 #"10"
+0 0 24 3 1 #" "
+0 0 21 3 4 #"1001"
+0 0 24 3 3 #") ("
+0 0 14 3 5 #"euler"
+0 0 24 3 3 #")))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 17 3 57
+(
+ #"#| Aufgabe 2.4: pi f\303\274r (pi 0 2000) erh\303\244lt man den Wert"
+ #" "
+) 0 6          10 17 3458
+(
+ #"51050834268597246397956840936880100499396350131646450391299896939728"
+ #"95740573357664507550802468938423820258099420738016701637603090539324"
+ #"99288622377709270500378292722284387194087270523119593488504937961523"
+ #"99314347965397464063362596989374909595798202276501212428141542645690"
+ #"33432044215118701674388929217922601216948373337694014483549462484505"
+ #"40300399984222101909371769478678309994441609586353190441833858525266"
+ #"08494111646656365351603111744490494387816464994710264791910412674765"
+ #"13594326221614777657987259854072656797024005117813216869083553902270"
+ #"23038146334352621381018403305219405918217241459505894803243159474921"
+ #"19686957474112804041607540293178966725148241962670015788316000853385"
+ #"38103324538517213659322920060433691806159322174593163616492681802128"
+ #"98217253500136303360954359969950115296453156542344564812623325639301"
+ #"16182668570373552200096218279046107232275961265554597114475150438519"
+ #"17267979358203926168759330322517168660067808892722890673417742842211"
+ #"24041116108181451234492020181417578435822310247667279069176520699239"
+ #"73966835333387164819336446238193298218524246429475926798878915087885"
+ #"69419965754935583682864001959500806276932488958381183221136404545636"
+ #"55033760090297507942097601717186518572567287950675628629800050190533"
+ #"27718084796713966517050446225532291420179759835644275267570092484463"
+ #"37060187413083749866642935012065805628319012717322219818463465240542"
+ #"00924569913783267358382639260644547399250683882658944276451061370369"
+ #"46336290245629880753090131709086404823120731099546497067794123912718"
+ #"52263195602097008672215648706313645335454092469215563481721230908347"
+ #"55980201548991978997303738257986723814770917354743758339670062680748"
+ #"70411981757404564157735346536722449666854366800739456166538246121230"
+ #"4738935971556306285258599744/162525719226225246455666137838917328292"
+ #"50348783746934201070180101390270800525172657115017399948400432565122"
+ #"24825764542555602709845420336141516224003349885314905452905531771343"
+ #"49794272467605772854584975438859624250986927643208757940407322390616"
+ #"11038016805699214770404336395592120193307866913752605587216158020600"
+ #"78539247290752658644644796536134123066907726249915465241083203198304"
+ #"38408176265074974629185507801730885595220238315211902351019742825627"
+ #"49491848292397388904120623813737058241129361906093065447505456255124"
+ #"40256479158289532004145555503546334367007005769121454035107390908095"
+ #"52540408245215539920534109261161569081107889378445595942764320653687"
+ #"09089574230792434335780330855209988105164185487887140114315079970823"
+ #"71860274184473524936058671645989963773645709338442315849271150844488"
+ #"55008304753833481682726213340620317339143140498505224197235017128160"
+ #"37444199520114432179527548509911148920857920372726978692333497390871"
+ #"31809009529657509171883188369464130151966396034432280278644367448756"
+ #"29803850019137126514109554763094714013418223699658726720359167614545"
+ #"93344493135522955810521782382886758592710025091048387578586921193497"
+ #"93250120551158854396282909851136975904532438634022461662802633463873"
+ #"77125706602288389837858495327507211796675434488330863572013359269912"
+ #"64097647055682004046115414923880457494035471079491941547210324709202"
+ #"28960964620288103161474120962408576364901836140656456249425652065788"
+ #"33527634319942177430581737631783177558774858107963216786519243887313"
+ #"92523257658795030639476043620667457112174728592980417312753680013043"
+ #"92367613700731089011740705622724381482893766135181110943909160743227"
+ #"39122796342966796668211856673229432750490210980781424363457549466978"
+ #"207372107318258699216048301537387646340219704049946846875\0"
+) 3 #"#e\0"
+8 #"decimal\0"
+2 #"1\0"
+0 0 17 29 1 #"\n"
+0 0 17 3 3 #" |#"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 2 #"pi"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 14 3 2 #"if"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"<"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 2 #") "
+0 0 24 29 1 #"\n"
+0 0 24 3 7 #"      ("
+0 0 14 3 1 #"+"
+0 0 24 3 1 #" "
+0 0 24 29 1 #"\n"
+0 0 24 3 8 #"       ("
+0 0 14 3 1 #"*"
+0 0 24 3 2 #" ("
+0 0 14 3 4 #"expt"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"-"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 2 #") "
+0 0 14 3 1 #"n"
+0 0 24 3 2 #") "
+0 0 24 29 1 #"\n"
+0 0 24 3 11 #"          ("
+0 0 14 3 1 #"/"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"4"
+0 0 24 3 2 #"  "
+0 0 17 3 70
+(
+ #";; statt am Ende mal 4 zu rechnen \303\244ndern wir den Z\303\244hle"
+ #"r schon hier. "
+) 0 0 24 29 1 #"\n"
+0 0 24 3 14 #"             ("
+0 0 14 3 1 #"+"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"*"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"2"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 2 #") "
+0 0 21 3 1 #"1"
+0 0 24 3 3 #")))"
+0 0 24 29 1 #"\n"
+0 0 24 3 8 #"       ("
+0 0 14 3 2 #"pi"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"+"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"n"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"1"
+0 0 24 3 2 #") "
+0 0 14 3 1 #"x"
+0 0 24 3 2 #"))"
+0 0 24 29 1 #"\n"
+0 0 24 3 6 #"      "
+0 0 21 3 1 #"0"
+0 0 24 3 2 #"))"
+0 0 24 29 1 #"\n"
+0 0 24 3 9 #"         "
+0 0 24 29 1 #"\n"
+0 0 17 3 59
+#"#| Aufgabe 3: Bestimmt den Typ eine eingegebenen Elements|#"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 7 #"type-of"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 3 #"  ("
+0 0 15 3 4 #"cond"
+0 0 24 3 3 #" (["
+0 0 14 3 8 #"boolean?"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 2 #"] "
+0 0 21 3 1 #"'"
+0 0 14 3 7 #"boolean"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 10 #"        (["
+0 0 14 3 5 #"list?"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 2 #"] "
+0 0 21 3 1 #"'"
+0 0 14 3 4 #"list"
+0 0 24 3 2 #") "
+0 0 24 29 1 #"\n"
+0 0 24 3 10 #"        (["
+0 0 14 3 5 #"pair?"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 2 #"] "
+0 0 21 3 1 #"'"
+0 0 14 3 4 #"pair"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 10 #"        (["
+0 0 14 3 7 #"symbol?"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 2 #"] "
+0 0 21 3 1 #"'"
+0 0 14 3 6 #"symbol"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 10 #"        (["
+0 0 14 3 7 #"number?"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 2 #"] "
+0 0 21 3 1 #"'"
+0 0 14 3 6 #"number"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 10 #"        (["
+0 0 14 3 5 #"char?"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 2 #"] "
+0 0 21 3 1 #"'"
+0 0 14 3 4 #"char"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 10 #"        (["
+0 0 14 3 7 #"string?"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 2 #"] "
+0 0 21 3 1 #"'"
+0 0 14 3 6 #"string"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 10 #"        (["
+0 0 14 3 7 #"vector?"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 2 #"] "
+0 0 21 3 1 #"'"
+0 0 14 3 6 #"vector"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 10 #"        (["
+0 0 14 3 10 #"procedure?"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"x"
+0 0 24 3 2 #"] "
+0 0 21 3 1 #"'"
+0 0 14 3 9 #"procedure"
+0 0 24 3 1 #")"
+0 0 24 29 1 #"\n"
+0 0 24 3 10 #"        ))"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 14 3 7 #"type-of"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"*"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"2"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"3"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"4"
+0 0 24 3 3 #")) "
+0 0 17 3 72
+(
+ #"; -> 'number: Der Ausdruck wird ausgewertet, das Ergebnis ist eine Z"
+ #"ahl."
+) 0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 14 3 7 #"type-of"
+0 0 24 3 2 #" ("
+0 0 14 3 3 #"not"
+0 0 24 3 1 #" "
+0 0 21 3 2 #"42"
+0 0 24 3 3 #")) "
+0 0 17 3 67
+#"; -> 'boolean: jede Zahl hat per Definition den Wahrheitswert true."
+0 0 24 29 1 #"\n"
+0 0 24 3 19 #"                   "
+0 0 17 3 41 #";(not #t) -> #f, und das ist ein boolean."
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 14 3 7 #"type-of"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"'"
+0 0 24 3 1 #"("
+0 0 14 3 4 #"eins"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"zwei"
+0 0 24 3 1 #" "
+0 0 14 3 4 #"drei"
+0 0 24 3 3 #")) "
+0 0 17 3 45 #"; -> 'list, gef\303\274llt mit beliebigen Elementen"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 14 3 7 #"type-of"
+0 0 24 3 1 #" "
+0 0 21 3 1 #"'"
+0 0 24 3 4 #"()) "
+0 0 17 3 50 #"; -> 'list, da auch die leere Liste eine Liste ist"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 15 3 6 #"define"
+0 0 24 3 2 #" ("
+0 0 14 3 2 #"id"
+0 0 24 3 1 #" "
+0 0 14 3 1 #"z"
+0 0 24 3 2 #") "
+0 0 14 3 1 #"z"
+0 0 24 3 2 #") "
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 14 3 7 #"type-of"
+0 0 24 3 2 #" ("
+0 0 14 3 2 #"id"
+0 0 24 3 1 #" "
+0 0 14 3 3 #"sin"
+0 0 24 3 3 #")) "
+0 0 17 3 84
+(
+ #"; -> 'procedure. id ist in der Funktion vorher definiert worden und "
+ #"beschreibt eine "
+) 0 0 24 29 1 #"\n"
+0 0 24 3 14 #"              "
+0 0 17 3 48 #";Procedure. id sin ist also auch eine Procedure."
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 14 3 7 #"type-of"
+0 0 24 3 2 #" ("
+0 0 14 3 10 #"string-ref"
+0 0 24 3 1 #" "
+0 0 19 3 39 #"\"Harry_Potter_und_der_Stein_der_Weisen\""
+0 0 24 3 1 #" "
+0 0 21 3 1 #"3"
+0 0 24 3 2 #"))"
+0 0 17 3 40 #"; -> 'char; string-ref gibt den char aus"
+0 0 24 29 1 #"\n"
+0 0 24 3 14 #"              "
+0 0 17 3 93
+(
+ #"; der an n-ter Stelle ist, in diesem Fall ist das Ergebnis #\\r, da "
+ #"r das 4. Zeichen von harRy"
+) 0 0 24 29 1 #"\n"
+0 0 24 3 14 #"              "
+0 0 17 3 5 #"; ist"
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 14 3 7 #"type-of"
+0 0 24 3 2 #" ("
+0 0 15 3 6 #"lambda"
+0 0 24 3 2 #" ("
+0 0 14 3 1 #"x"
+0 0 24 3 2 #") "
+0 0 14 3 1 #"x"
+0 0 24 3 3 #")) "
+0 0 17 3 56 #";->  'procedure, lambda (x) x ist eine anonyme Funktion."
+0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 14 3 7 #"type-of"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"type-of"
+0 0 24 3 2 #") "
+0 0 17 3 72
+(
+ #"; ->'procedure die Funktion die wir geschrieben haben ist eine Funkt"
+ #"ion."
+) 0 0 24 29 1 #"\n"
+0 0 24 3 1 #"("
+0 0 14 3 7 #"type-of"
+0 0 24 3 2 #" ("
+0 0 14 3 7 #"type-of"
+0 0 24 3 1 #" "
+0 0 14 3 7 #"type-of"
+0 0 24 3 3 #")) "
+0 0 17 3 47 #"; -> 'symbol, da \" 'procedure \" ein Symbol ist."
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0 0 24 29 1 #"\n"
+0           0
